@@ -1,374 +1,538 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Study Tracer Form</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="container py-5">
-        <h1 class="text-center mb-4">Study Tracer Form</h1>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .stepper {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
         
-        <!-- Stepper -->
-        <div class="stepper">
-            <div class="step active" data-step="1">
-                <div class="step-number">1</div>
-                <div class="step-label">Data Pribadi</div>
-            </div>
-            <div class="step" data-step="2">
-                <div class="step-number">2</div>
-                <div class="step-label">Pendidikan Lanjutan</div>
-            </div>
-            <div class="step" data-step="3">
-                <div class="step-number">3</div>
-                <div class="step-label">Data Pekerjaan</div>
-            </div>
-            <div class="step" data-step="4">
-                <div class="step-number">4</div>
-                <div class="step-label">Pemanfaatan Kompetensi</div>
-            </div>
-            <div class="step" data-step="5">
-                <div class="step-number">5</div>
-                <div class="step-label">Keterangan Tambahan</div>
+        .step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        
+        .step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            right: -50%;
+            width: 100%;
+            height: 2px;
+            background-color: #dee2e6;
+            z-index: 1;
+        }
+        
+        .step.active:not(:last-child)::after,
+        .step.completed:not(:last-child)::after {
+            background-color: #28a745;
+        }
+        
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: white;
+            border: 2px solid #dee2e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            position: relative;
+            z-index: 2;
+            font-weight: bold;
+            color: #6c757d;
+        }
+        
+        .step.active .step-circle {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+        
+        .step.completed .step-circle {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+        
+        .step-title {
+            font-size: 0.9rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .step.active .step-title {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .form-section {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        .form-section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .btn-navigation {
+            min-width: 100px;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+        
+        .required {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow">
+                    <div class="card-header text-center">
+                        <h3 class="mb-0"><i class="fas fa-graduation-cap me-2"></i>Study Tracer Form</h3>
+                        <p class="mb-0 mt-2">Silakan lengkapi data berikut untuk keperluan tracer study</p>
+                    </div>
+                    <div class="card-body">
+                        <!-- Stepper -->
+                        <div class="stepper">
+                            <div class="step active" data-step="1">
+                                <div class="step-circle">1</div>
+                                <div class="step-title">Data Pribadi</div>
+                            </div>
+                            <div class="step" data-step="2">
+                                <div class="step-circle">2</div>
+                                <div class="step-title">Pendidikan Lanjutan</div>
+                            </div>
+                            <div class="step" data-step="3">
+                                <div class="step-circle">3</div>
+                                <div class="step-title">Data Pekerjaan</div>
+                            </div>
+                            <div class="step" data-step="4">
+                                <div class="step-circle">4</div>
+                                <div class="step-title">Evaluasi</div>
+                            </div>
+                            <div class="step" data-step="5">
+                                <div class="step-circle">5</div>
+                                <div class="step-title">Tambahan</div>
+                            </div>
+                        </div>
+
+                        <form id="tracerStudyForm">
+                            <!-- Bagian 1: Data Pribadi -->
+                            <div class="form-section active" id="section-1">
+                                <h5 class="text-success mb-4"><i class="fas fa-user me-2"></i>Data Pribadi</h5>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Nama Lengkap <span class="required">*</span></label>
+                                        <input type="text" class="form-control" name="nama_lengkap" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Jenis Kelamin <span class="required">*</span></label>
+                                        <select class="form-select" name="jenis_kelamin" required>
+                                            <option value="">Pilih Jenis Kelamin</option>
+                                            <option value="Laki-laki">Laki-laki</option>
+                                            <option value="Perempuan">Perempuan</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Nomor Induk Siswa Nasional (NISN) <span class="required">*</span></label>
+                                        <input type="text" class="form-control" name="nisn" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Tahun Lulus <span class="required">*</span></label>
+                                        <input type="number" class="form-control" name="tahun_lulus" min="2000" max="2025" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Kompetensi Keahlian <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="kompetensi_keahlian" placeholder="Contoh: Teknik Komputer dan Jaringan" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Alamat Surat Menyurat <span class="required">*</span></label>
+                                    <textarea class="form-control" name="alamat" rows="3" required></textarea>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Nomor Telepon/HP <span class="required">*</span></label>
+                                        <input type="tel" class="form-control" name="telepon" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Alamat Email <span class="required">*</span></label>
+                                        <input type="email" class="form-control" name="email" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Media Sosial (opsional)</label>
+                                    <input type="text" class="form-control" name="media_sosial" placeholder="Username Instagram, Facebook, dll.">
+                                </div>
+                            </div>
+
+                            <!-- Bagian 2: Data Pendidikan Lanjutan -->
+                            <div class="form-section" id="section-2">
+                                <h5 class="text-success mb-4"><i class="fas fa-university me-2"></i>Data Pendidikan Lanjutan</h5>
+                                <div class="mb-3">
+                                    <label class="form-label">Apakah melanjutkan pendidikan setelah SMK? <span class="required">*</span></label>
+                                    <div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="melanjutkan_pendidikan" id="pendidikan_ya" value="ya">
+                                            <label class="form-check-label" for="pendidikan_ya">Ya</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="melanjutkan_pendidikan" id="pendidikan_tidak" value="tidak">
+                                            <label class="form-check-label" for="pendidikan_tidak">Tidak</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="detail_pendidikan" style="display: none;">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Jenjang Pendidikan</label>
+                                            <select class="form-select" name="jenjang_pendidikan">
+                                                <option value="">Pilih Jenjang</option>
+                                                <option value="D1">D1</option>
+                                                <option value="D2">D2</option>
+                                                <option value="D3">D3</option>
+                                                <option value="D4">D4</option>
+                                                <option value="S1">S1</option>
+                                                <option value="S2">S2</option>
+                                                <option value="S3">S3</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Nama Perguruan Tinggi</label>
+                                            <input type="text" class="form-control" name="nama_pt">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Program Studi</label>
+                                        <input type="text" class="form-control" name="program_studi">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Tahun Masuk</label>
+                                            <input type="number" class="form-control" name="tahun_masuk_pt" min="2000" max="2025">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Tahun Lulus</label>
+                                            <input type="number" class="form-control" name="tahun_lulus_pt" min="2000" max="2030">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Status saat ini</label>
+                                        <select class="form-select" name="status_kuliah">
+                                            <option value="">Pilih Status</option>
+                                            <option value="Mahasiswa aktif">Mahasiswa aktif</option>
+                                            <option value="Lulus">Lulus</option>
+                                            <option value="Cuti Kuliah">Cuti Kuliah</option>
+                                            <option value="Drop Out">Drop Out</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bagian 3: Data Pekerjaan -->
+                            <div class="form-section" id="section-3">
+                                <h5 class="text-success mb-4"><i class="fas fa-briefcase me-2"></i>Data Pekerjaan</h5>
+                                <div class="mb-3">
+                                    <label class="form-label">Apakah saat ini bekerja? <span class="required">*</span></label>
+                                    <div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="bekerja" id="bekerja_ya" value="ya">
+                                            <label class="form-check-label" for="bekerja_ya">Ya</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="bekerja" id="bekerja_tidak" value="tidak">
+                                            <label class="form-check-label" for="bekerja_tidak">Tidak</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="detail_pekerjaan" style="display: none;">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Nama Perusahaan/Instansi</label>
+                                            <input type="text" class="form-control" name="nama_perusahaan">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Bidang Usaha</label>
+                                            <input type="text" class="form-control" name="bidang_usaha">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Jabatan</label>
+                                            <input type="text" class="form-control" name="jabatan">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Tahun Masuk</label>
+                                            <input type="number" class="form-control" name="tahun_masuk_kerja" min="2000" max="2025">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Alamat Perusahaan</label>
+                                        <textarea class="form-control" name="alamat_perusahaan" rows="3"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Apakah pekerjaan sesuai dengan kompetensi keahlian di SMK?</label>
+                                        <div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="sesuai_kompetensi" id="sesuai_ya" value="ya">
+                                                <label class="form-check-label" for="sesuai_ya">Ya</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="sesuai_kompetensi" id="sesuai_tidak" value="tidak">
+                                                <label class="form-check-label" for="sesuai_tidak">Tidak</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3" id="alasan_tidak_sesuai" style="display: none;">
+                                        <label class="form-label">Jika Tidak, sebutkan alasannya</label>
+                                        <textarea class="form-control" name="alasan_tidak_sesuai" rows="3"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Gaji/Penghasilan per bulan</label>
+                                        <select class="form-select" name="gaji">
+                                            <option value="">Pilih Rentang Gaji</option>
+                                            <option value="< 1 juta">< 1 juta</option>
+                                            <option value="1-2 juta">1-2 juta</option>
+                                            <option value="2-3 juta">2-3 juta</option>
+                                            <option value="3-5 juta">3-5 juta</option>
+                                            <option value="5-10 juta">5-10 juta</option>
+                                            <option value="> 10 juta">> 10 juta</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bagian 4: Pemanfaatan Kompetensi dan Evaluasi -->
+                            <div class="form-section" id="section-4">
+                                <h5 class="text-success mb-4"><i class="fas fa-chart-line me-2"></i>Pemanfaatan Kompetensi dan Evaluasi</h5>
+                                <div class="mb-3">
+                                    <label class="form-label">Apakah kompetensi yang diperoleh di SMK bermanfaat dalam pekerjaan? <span class="required">*</span></label>
+                                    <select class="form-select" name="manfaat_kompetensi" required>
+                                        <option value="">Pilih Tingkat Manfaat</option>
+                                        <option value="Sangat Bermanfaat">Sangat Bermanfaat</option>
+                                        <option value="Bermanfaat">Bermanfaat</option>
+                                        <option value="Cukup Bermanfaat">Cukup Bermanfaat</option>
+                                        <option value="Kurang Bermanfaat">Kurang Bermanfaat</option>
+                                        <option value="Tidak Bermanfaat">Tidak Bermanfaat</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Sebutkan kompetensi yang paling bermanfaat</label>
+                                    <textarea class="form-control" name="kompetensi_bermanfaat" rows="3" placeholder="Contoh: Keterampilan teknis, Soft skill, dll."></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Saran untuk perbaikan program studi di SMK</label>
+                                    <textarea class="form-control" name="saran_perbaikan" rows="4" placeholder="Berikan masukan untuk perbaikan kurikulum, fasilitas, dll."></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Bagian 5: Keterangan Tambahan -->
+                            <div class="form-section" id="section-5">
+                                <h5 class="text-success mb-4"><i class="fas fa-plus-circle me-2"></i>Keterangan Tambahan</h5>
+                                <div class="mb-3">
+                                    <label class="form-label">Hal lain yang ingin disampaikan</label>
+                                    <textarea class="form-control" name="keterangan_tambahan" rows="5" placeholder="Berikan informasi tambahan yang relevan"></textarea>
+                                </div>
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    Terima kasih telah meluangkan waktu untuk mengisi form tracer study ini. Data yang Anda berikan sangat berharga untuk pengembangan program pendidikan di SMK.
+                                </div>
+                            </div>
+
+                            <!-- Navigation Buttons -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <button type="button" class="btn btn-secondary btn-navigation" id="prevBtn" style="display: none;">
+                                    <i class="fas fa-chevron-left me-2"></i>Sebelumnya
+                                </button>
+                                <div class="ms-auto">
+                                    <button type="button" class="btn btn-success btn-navigation" id="nextBtn">
+                                        Selanjutnya<i class="fas fa-chevron-right ms-2"></i>
+                                    </button>
+                                    <button type="submit" class="btn btn-primary btn-navigation" id="submitBtn" style="display: none;">
+                                        <i class="fas fa-paper-plane me-2"></i>Kirim Data
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
-        
-        <!-- Form Sections -->
-        <form id="studyTracerForm">
-            <!-- Section 1: Personal Data -->
-            <div class="form-section active" id="section-1">
-                <h2 class="mb-4">Data Pribadi</h2>
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label for="fullName" class="form-label">Nama Lengkap</label>
-                        <input type="text" class="form-control" id="fullName" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="gender" class="form-label">Jenis Kelamin</label>
-                        <select class="form-select" id="gender" required>
-                            <option value="" selected disabled>Pilih jenis kelamin</option>
-                            <option value="Laki-laki">Laki-laki</option>
-                            <option value="Perempuan">Perempuan</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="nisn" class="form-label">Nomor Induk Siswa Nasional (NISN)</label>
-                        <input type="text" class="form-control" id="nisn" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="graduationYear" class="form-label">Tahun Lulus</label>
-                        <input type="number" class="form-control" id="graduationYear" min="1900" max="2099" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="major" class="form-label">Kompetensi Keahlian</label>
-                        <input type="text" class="form-control" id="major" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="address" class="form-label">Alamat Surat Menyurat</label>
-                        <textarea class="form-control" id="address" rows="2" required></textarea>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="phone" class="form-label">Nomor Telepon/HP</label>
-                        <input type="tel" class="form-control" id="phone" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="email" class="form-label">Alamat Email</label>
-                        <input type="email" class="form-control" id="email" required>
-                    </div>
-                    <div class="col-12">
-                        <label for="socialMedia" class="form-label">Media Sosial (jika ada)</label>
-                        <input type="text" class="form-control" id="socialMedia">
-                    </div>
-                </div>
-                <div class="btn-container">
-                    <button type="button" class="btn btn-secondary" disabled>Sebelumnya</button>
-                    <button type="button" class="btn btn-primary next-btn" data-next="2">Selanjutnya</button>
-                </div>
-            </div>
-            
-            <!-- Section 2: Further Education -->
-            <div class="form-section" id="section-2">
-                <h2 class="mb-4">Data Pendidikan Lanjutan</h2>
-                <div class="row g-3">
-                    <div class="col-12">
-                        <label class="form-label">Apakah melanjutkan pendidikan setelah SMK?</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="continueEducation" id="continueEducationYes" value="Ya">
-                            <label class="form-check-label" for="continueEducationYes">Ya</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="continueEducation" id="continueEducationNo" value="Tidak" checked>
-                            <label class="form-check-label" for="continueEducationNo">Tidak</label>
-                        </div>
-                    </div>
-                    
-                    <div id="educationDetails" class="mt-3" style="display: none;">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label for="educationLevel" class="form-label">Jenjang Pendidikan</label>
-                                <input type="text" class="form-control" id="educationLevel" placeholder="Contoh: D3, S1, dll.">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="university" class="form-label">Nama Perguruan Tinggi</label>
-                                <input type="text" class="form-control" id="university">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="studyProgram" class="form-label">Program Studi</label>
-                                <input type="text" class="form-control" id="studyProgram">
-                            </div>
-                            <div class="col-md-3">
-                                <label for="enrollmentYear" class="form-label">Tahun Masuk</label>
-                                <input type="number" class="form-control" id="enrollmentYear" min="1900" max="2099">
-                            </div>
-                            <div class="col-md-3">
-                                <label for="graduationYearHigher" class="form-label">Tahun Lulus</label>
-                                <input type="number" class="form-control" id="graduationYearHigher" min="1900" max="2099">
-                            </div>
-                            <div class="col-12">
-                                <label for="educationStatus" class="form-label">Status saat ini</label>
-                                <input type="text" class="form-control" id="educationStatus" placeholder="Contoh: Mahasiswa aktif, Lulus, Cuti Kuliah">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="btn-container">
-                    <button type="button" class="btn btn-secondary prev-btn" data-prev="1">Sebelumnya</button>
-                    <button type="button" class="btn btn-primary next-btn" data-next="3">Selanjutnya</button>
-                </div>
-            </div>
-            
-            <!-- Section 3: Employment Data -->
-            <div class="form-section" id="section-3">
-                <h2 class="mb-4">Data Pekerjaan</h2>
-                <div class="row g-3">
-                    <div class="col-12">
-                        <label class="form-label">Apakah saat ini bekerja?</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="isWorking" id="isWorkingYes" value="Ya">
-                            <label class="form-check-label" for="isWorkingYes">Ya</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="isWorking" id="isWorkingNo" value="Tidak" checked>
-                            <label class="form-check-label" for="isWorkingNo">Tidak</label>
-                        </div>
-                    </div>
-                    
-                    <div id="employmentDetails" class="mt-3" style="display: none;">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label for="companyName" class="form-label">Nama Perusahaan/Instansi</label>
-                                <input type="text" class="form-control" id="companyName">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="businessField" class="form-label">Bidang Usaha</label>
-                                <input type="text" class="form-control" id="businessField">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="position" class="form-label">Jabatan</label>
-                                <input type="text" class="form-control" id="position">
-                            </div>
-                            <div class="col-md-3">
-                                <label for="employmentYear" class="form-label">Tahun Masuk</label>
-                                <input type="number" class="form-control" id="employmentYear" min="1900" max="2099">
-                            </div>
-                            <div class="col-12">
-                                <label for="companyAddress" class="form-label">Alamat Perusahaan</label>
-                                <textarea class="form-control" id="companyAddress" rows="2"></textarea>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Apakah pekerjaan sesuai dengan kompetensi keahlian di SMK?</label>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="jobRelevant" id="jobRelevantYes" value="Ya">
-                                    <label class="form-check-label" for="jobRelevantYes">Ya</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="jobRelevant" id="jobRelevantNo" value="Tidak">
-                                    <label class="form-check-label" for="jobRelevantNo">Tidak</label>
-                                </div>
-                            </div>
-                            <div class="col-12" id="relevanceReason" style="display: none;">
-                                <label for="reasonNotRelevant" class="form-label">Jika Tidak, sebutkan alasannya</label>
-                                <textarea class="form-control" id="reasonNotRelevant" rows="2"></textarea>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="salary" class="form-label">Gaji/Penghasilan per bulan</label>
-                                <input type="text" class="form-control" id="salary" placeholder="Rentang gaji yang diterima">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="btn-container">
-                    <button type="button" class="btn btn-secondary prev-btn" data-prev="2">Sebelumnya</button>
-                    <button type="button" class="btn btn-primary next-btn" data-next="4">Selanjutnya</button>
-                </div>
-            </div>
-            
-            <!-- Section 4: Competency Utilization -->
-            <div class="form-section" id="section-4">
-                <h2 class="mb-4">Pemanfaatan Kompetensi dan Evaluasi</h2>
-                <div class="row g-3">
-                    <div class="col-12">
-                        <label for="competencyUsefulness" class="form-label">Apakah kompetensi yang diperoleh di SMK bermanfaat dalam pekerjaan?</label>
-                        <select class="form-select" id="competencyUsefulness">
-                            <option value="" selected disabled>Pilih tingkat manfaat</option>
-                            <option value="Sangat Bermanfaat">Sangat Bermanfaat</option>
-                            <option value="Bermanfaat">Bermanfaat</option>
-                            <option value="Cukup Bermanfaat">Cukup Bermanfaat</option>
-                            <option value="Kurang Bermanfaat">Kurang Bermanfaat</option>
-                            <option value="Tidak Bermanfaat">Tidak Bermanfaat</option>
-                        </select>
-                    </div>
-                    <div class="col-12">
-                        <label for="mostUsefulCompetency" class="form-label">Jika ada, sebutkan kompetensi yang paling bermanfaat</label>
-                        <input type="text" class="form-control" id="mostUsefulCompetency" placeholder="Contoh: Keterampilan teknis, Soft skill, dll.">
-                    </div>
-                    <div class="col-12">
-                        <label for="improvementSuggestions" class="form-label">Saran untuk perbaikan program studi di SMK</label>
-                        <textarea class="form-control" id="improvementSuggestions" rows="3" placeholder="Berikan masukan untuk perbaikan kurikulum, fasilitas, dll."></textarea>
-                    </div>
-                </div>
-                <div class="btn-container">
-                    <button type="button" class="btn btn-secondary prev-btn" data-prev="3">Sebelumnya</button>
-                    <button type="button" class="btn btn-primary next-btn" data-next="5">Selanjutnya</button>
-                </div>
-            </div>
-            
-            <!-- Section 5: Additional Information -->
-            <div class="form-section" id="section-5">
-                <h2 class="mb-4">Keterangan Tambahan</h2>
-                <div class="row g-3">
-                    <div class="col-12">
-                        <label for="additionalInfo" class="form-label">Hal lain yang ingin disampaikan</label>
-                        <textarea class="form-control" id="additionalInfo" rows="4" placeholder="Berikan informasi tambahan yang relevan"></textarea>
-                    </div>
-                </div>
-                <div class="btn-container">
-                    <button type="button" class="btn btn-secondary prev-btn" data-prev="4">Sebelumnya</button>
-                    <button type="submit" class="btn btn-success">Kirim Formulir</button>
-                </div>
-            </div>
-        </form>
     </div>
 
-    <!-- Bootstrap 5 JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Custom JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
-  // Navigation between steps
-  const nextButtons = document.querySelectorAll(".next-btn");
-  const prevButtons = document.querySelectorAll(".prev-btn");
+        let currentStep = 1;
+        const totalSteps = 5;
 
-  nextButtons.forEach((button) => {
-    button.addEventListener("click", function () {
-      const currentSection = this.closest(".form-section");
-      const nextSectionId = this.getAttribute("data-next");
+        // Initialize form
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStepperDisplay();
+            setupEventListeners();
+        });
 
-      // Validate current section before proceeding
-      if (validateSection(currentSection.id)) {
-        currentSection.classList.remove("active");
-        document.getElementById(`section-${nextSectionId}`).classList.add("active");
+        function setupEventListeners() {
+            // Navigation buttons
+            document.getElementById('nextBtn').addEventListener('click', nextStep);
+            document.getElementById('prevBtn').addEventListener('click', prevStep);
+            
+            // Form submit
+            document.getElementById('tracerStudyForm').addEventListener('submit', handleSubmit);
+            
+            // Radio button listeners for conditional fields
+            document.querySelectorAll('input[name="melanjutkan_pendidikan"]').forEach(radio => {
+                radio.addEventListener('change', togglePendidikanDetail);
+            });
+            
+            document.querySelectorAll('input[name="bekerja"]').forEach(radio => {
+                radio.addEventListener('change', togglePekerjaanDetail);
+            });
+            
+            document.querySelectorAll('input[name="sesuai_kompetensi"]').forEach(radio => {
+                radio.addEventListener('change', toggleAlasanTidakSesuai);
+            });
+        }
 
-        // Update stepper
-        updateStepper(nextSectionId);
-      }
-    });
-  });
+        function nextStep() {
+            if (validateCurrentStep()) {
+                currentStep++;
+                updateStepperDisplay();
+                showCurrentSection();
+            }
+        }
 
-  prevButtons.forEach((button) => {
-    button.addEventListener("click", function () {
-      const currentSection = this.closest(".form-section");
-      const prevSectionId = this.getAttribute("data-prev");
+        function prevStep() {
+            currentStep--;
+            updateStepperDisplay();
+            showCurrentSection();
+        }
 
-      currentSection.classList.remove("active");
-      document.getElementById(`section-${prevSectionId}`).classList.add("active");
+        function validateCurrentStep() {
+            const currentSection = document.getElementById(`section-${currentStep}`);
+            const requiredFields = currentSection.querySelectorAll('[required]');
+            let isValid = true;
 
-      // Update stepper
-      updateStepper(prevSectionId);
-    });
-  });
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    field.classList.remove('is-invalid');
+                }
+            });
 
-  // Update stepper visualization
-  function updateStepper(activeStep) {
-    document.querySelectorAll(".step").forEach((step) => {
-      step.classList.remove("active");
-      if (parseInt(step.getAttribute("data-step")) <= parseInt(activeStep)) {
-        step.classList.add("active");
-      }
-    });
-  }
+            if (!isValid) {
+                alert('Mohon lengkapi semua field yang wajib diisi (bertanda *)');
+            }
 
-  // Section validation
-  function validateSection(sectionId) {
-    const section = document.getElementById(sectionId);
-    const requiredInputs = section.querySelectorAll("[required]");
-    let isValid = true;
+            return isValid;
+        }
 
-    requiredInputs.forEach((input) => {
-      if (!input.value.trim()) {
-        input.classList.add("is-invalid");
-        isValid = false;
-      } else {
-        input.classList.remove("is-invalid");
-      }
-    });
+        function updateStepperDisplay() {
+            const steps = document.querySelectorAll('.step');
+            const sections = document.querySelectorAll('.form-section');
+            
+            steps.forEach((step, index) => {
+                const stepNumber = index + 1;
+                step.classList.remove('active', 'completed');
+                
+                if (stepNumber === currentStep) {
+                    step.classList.add('active');
+                } else if (stepNumber < currentStep) {
+                    step.classList.add('completed');
+                    step.querySelector('.step-circle').innerHTML = '<i class="fas fa-check"></i>';
+                } else {
+                    step.querySelector('.step-circle').innerHTML = stepNumber;
+                }
+            });
 
-    if (!isValid) {
-      alert("Harap lengkapi semua field yang wajib diisi sebelum melanjutkan.");
-    }
+            // Update navigation buttons
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const submitBtn = document.getElementById('submitBtn');
 
-    return isValid;
-  }
+            prevBtn.style.display = currentStep > 1 ? 'block' : 'none';
+            
+            if (currentStep === totalSteps) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'block';
+            } else {
+                nextBtn.style.display = 'block';
+                submitBtn.style.display = 'none';
+            }
+        }
 
-  // Toggle education details
-  document.getElementById("continueEducationYes").addEventListener("change", function () {
-    document.getElementById("educationDetails").style.display = this.checked ? "block" : "none";
-  });
+        function showCurrentSection() {
+            const sections = document.querySelectorAll('.form-section');
+            sections.forEach((section, index) => {
+                section.classList.remove('active');
+                if (index + 1 === currentStep) {
+                    section.classList.add('active');
+                }
+            });
+        }
 
-  document.getElementById("continueEducationNo").addEventListener("change", function () {
-    document.getElementById("educationDetails").style.display = this.checked ? "none" : "block";
-  });
+        function togglePendidikanDetail() {
+            const value = document.querySelector('input[name="melanjutkan_pendidikan"]:checked')?.value;
+            const detailDiv = document.getElementById('detail_pendidikan');
+            detailDiv.style.display = value === 'ya' ? 'block' : 'none';
+        }
 
-  // Toggle employment details
-  document.getElementById("isWorkingYes").addEventListener("change", function () {
-    document.getElementById("employmentDetails").style.display = this.checked ? "block" : "none";
-  });
+        function togglePekerjaanDetail() {
+            const value = document.querySelector('input[name="bekerja"]:checked')?.value;
+            const detailDiv = document.getElementById('detail_pekerjaan');
+            detailDiv.style.display = value === 'ya' ? 'block' : 'none';
+        }
 
-  document.getElementById("isWorkingNo").addEventListener("change", function () {
-    document.getElementById("employmentDetails").style.display = this.checked ? "none" : "block";
-  });
+        function toggleAlasanTidakSesuai() {
+            const value = document.querySelector('input[name="sesuai_kompetensi"]:checked')?.value;
+            const alasanDiv = document.getElementById('alasan_tidak_sesuai');
+            alasanDiv.style.display = value === 'tidak' ? 'block' : 'none';
+        }
 
-  // Toggle job relevance reason
-  document.getElementById("jobRelevantNo").addEventListener("change", function () {
-    document.getElementById("relevanceReason").style.display = this.checked ? "block" : "none";
-  });
-
-  document.getElementById("jobRelevantYes").addEventListener("change", function () {
-    document.getElementById("relevanceReason").style.display = "none";
-  });
-
-  // Form submission
-  document.getElementById("studyTracerForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    if (validateSection("section-5")) {
-      // Here you would typically send the form data to a server
-      alert("Formulir berhasil dikirim! Terima kasih atas partisipasinya.");
-      // this.reset();
-      // Reset to first section
-      document.querySelectorAll(".form-section").forEach((section) => {
-        section.classList.remove("active");
-      });
-      document.getElementById("section-1").classList.add("active");
-      updateStepper(1);
-    }
-  });
-});
+        function handleSubmit(e) {
+            e.preventDefault();
+            
+            if (validateCurrentStep()) {
+                // Collect form data
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData.entries());
+                
+                // Show success message
+                alert('Data berhasil dikirim! Terima kasih atas partisipasi Anda dalam tracer study ini.');
+                
+                // Here you would normally send the data to your server
+                console.log('Form data:', data);
+                
+                // Reset form
+                e.target.reset();
+                currentStep = 1;
+                updateStepperDisplay();
+                showCurrentSection();
+            }
+        }
     </script>
 </body>
 </html>
